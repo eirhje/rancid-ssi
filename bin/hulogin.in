@@ -1,4 +1,4 @@
-#! @EXPECT_PATH@ --
+#! /usr/bin/expect --
 ##
 ## $Id: clogin.in 2210 2010-06-25 19:41:21Z root $
 ##
@@ -590,7 +590,15 @@ proc run_commands { command } {
                                                   exp_continue }
 	    -re "\[\n\r]+"			{ send_user -- "$expect_out(buffer)"
 						  exp_continue }
-	    -re " *---- More ----\[^\n\r]*"    {
+	#    -re "  ---- More ----"		{
+	#					send " "
+         #                                         expect {
+          #                                              -re "\\e\\\[42D\\s+\\e\\\[42D" {}
+           #                                       }
+	#					exp_continue
+	#					}
+
+     	    -re " *---- More ----\[^\n\r]*"    {
 				                # akrastel: Huawei
 				                send " "
 				                # akrastel: delete <ESC>[42D\s\s...<ESC>[42D that Huawei sends to clear line
@@ -601,10 +609,10 @@ proc run_commands { command } {
 	}
     }
     log_user 1
-
-    send "quit\r"							
+    send -h "quit\r"							
     expect {
 	-re "^\[^\n\r *]*$reprompt"		{
+						  send " "
 						  send -h "quit\r"
 						  exp_continue;
 						}
@@ -755,6 +763,8 @@ foreach router [lrange $argv $i end] {
     }
 
     # we are logged in
+ 
+    send -h "screen-length 0 temporary\r"
 
     if { $do_command } {
 	if {[run_commands $command]} {

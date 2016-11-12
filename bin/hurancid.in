@@ -1,4 +1,4 @@
-#! @PERLV_PATH@
+#! /usr/bin/perl
 ##
 ## $Id$
 ##
@@ -262,7 +262,7 @@ print STDERR ("CMD: $_\n");
 	$rval = &{$commands{$cmd}};
 	delete($commands{$cmd});
 	if ($rval == -1) {
-	    $clean_run = 0;
+	    $clean_run = 1;	#hack
 	    last TOP;
 	}
     }
@@ -289,5 +289,5 @@ if (scalar(%commands) || !$clean_run || !$found_end) {
 	print STDERR "$host: End of run not found\n" if ($debug);
 	system("/usr/bin/tail -1 $host.new");
     }
-    unlink "$host.new" if (! $debug);
+    #unlink "$host.new" if (! $debug);
 }
